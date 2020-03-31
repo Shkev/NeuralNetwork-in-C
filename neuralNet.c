@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <assert.h>
 #include "neuralNet.h"
 
 double sigmoid(double x)
@@ -16,7 +17,8 @@ double dSigmoid(double x)
 
 double init_weight_val()
 {
-  return (((double)rand()) / ((double)RAND_MAX));
+  srand(time(0));
+  return (double)rand() / (double)RAND_MAX;
 }
 
 void init_weights_bias(int numInputs, int numHiddenNodes, int numOutputs, double hiddenWeights[numInputs][numHiddenNodes], double outputWeights[numHiddenNodes][numOutputs], double* hiddenLayerBias, double* outputLayerBias)
@@ -52,11 +54,12 @@ void init_weights_bias(int numInputs, int numHiddenNodes, int numOutputs, double
 void shuffle(int arr[], int size)
 {
   //to randomize seed to prevent getting the same results every time
-  srand(time(NULL));
+  srand(time(0));
   int k;
   for(k = size - 1; k > 0; k--)
   {
-    int r = (int)(rand() / RAND_MAX) * k;
+    int r = rand() % (k+1);
+    assert(r <= k);
 
     int tmp = arr[k];
     arr[k] = arr[r];
@@ -92,7 +95,7 @@ double avgArr(double arr[], int size)
 double predict(int index, int numHiddenNodes, int numInputs, int numOutputs, double prediction_inputs[][numInputs], double hiddenWeights[][numHiddenNodes], double outputWeights[][numOutputs], double* hiddenLayerBias, double* outputLayerBias)
 {
   int k, j;
-  double prediction, hiddenLayer;
+  double prediction, hiddenLayer[numHiddenNodes];
   //running prediction input through hidden layer
   for(j = 0; j < numHiddenNodes; j++)
   {
@@ -101,7 +104,7 @@ double predict(int index, int numHiddenNodes, int numInputs, int numOutputs, dou
     {
       prediction += prediction_inputs[index][k] * hiddenWeights[k][j];
     }
-    hiddenLayer = sigmoid(prediction);
+    hiddenLayer[j] = sigmoid(prediction);
   }
 
   //computing outputs in output layer
@@ -110,7 +113,7 @@ double predict(int index, int numHiddenNodes, int numInputs, int numOutputs, dou
     prediction = hiddenLayerBias[j];
     for(k = 0; k < numHiddenNodes; k++)
     {
-      prediction += hiddenLayer * outputWeights[k][j];
+      prediction += hiddenLayer[k] * outputWeights[k][j];
     }
     prediction = sigmoid(prediction);
   }

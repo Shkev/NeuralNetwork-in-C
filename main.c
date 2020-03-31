@@ -3,7 +3,7 @@
 #include "neuralNet.h"
 
 /*HYPERPARAMS*/
-static const int epochs = 100;
+static const int epochs = 10000;
 static const double learning_rate = 0.1;
 
 static const int numInputs = 2;
@@ -27,7 +27,7 @@ double training_inputs[trainingSets][numInputs] = { {0.0f,0.0f},{1.0f,0.0f},{0.0
 double training_outputs[trainingSets][numOutputs] = { {0.0f},{1.0f},{1.0f},{0.0f} };
 
 //prediction data
-double prediction_inputs[][numPredictInputs] = { {0, 0} };
+double prediction_inputs[][numPredictInputs] = { {0, 1} };
 
 int main()
 {
@@ -115,10 +115,12 @@ int main()
 	  hiddenWeights[k][j] += training_inputs[index][k] * deltaHidden[j] * learning_rate;
 	}
       }
+      printf("%f\n", outputLayer[0]);
       rmse[index] = find_rmse(numOutputs, index, training_outputs, outputLayer);
     }
-    printf("%d / %d :: %f\n", loopCount+1, epochs, avgArr(rmse, numInputs));
+    //printf("%d / %d :: %f\n", loopCount+1, epochs, avgArr(rmse, numInputs));
   }
+  printf("Final Loss :: %f\n", avgArr(rmse, numInputs));
 
   //Making a prediction based on data
   double prediction = predict(0, numHiddenNodes, numPredictInputs, numOutputs, prediction_inputs, hiddenWeights, outputWeights, hiddenLayerBias, outputLayerBias);

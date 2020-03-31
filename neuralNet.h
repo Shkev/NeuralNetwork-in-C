@@ -14,7 +14,7 @@ double sigmoid(double x);
 double dSigmoid(double x);
 
 //returns initialization values of all weights and biases between 0.0 and 1.0
-double init_weight();
+double init_weight_val();
 
 //initializing all weights and biases to between 0.0 and 1.0
 void init_weights_bias(int numInputs, int numHiddenNodes, int numOutputs, double hiddenWeights[numInputs][numHiddenNodes], double outputWeights[numHiddenNodes][numOutputs], double* hiddenLayerBias, double* outputLayerBias);
